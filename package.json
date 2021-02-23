@@ -1,5 +1,5 @@
 {
-  "name": "@intermine/bluegenes-GWAS-visualizer",
+  "name": "@intermine/bluegenes-gwas-visualizer",
   "version": "1.0.0",
   "main": "src/index.js",
   "description": "",
