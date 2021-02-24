@@ -22,7 +22,9 @@ const soymineQuery = geneId => ({
 });
 */
 
-const humanMineQuery = geneId => ({
+// Following are queries for humanmine.
+
+const GWASQuery = gwasIds => ({
 	from: 'GWAS',
 	select: [
 		'results.pValue',
@@ -36,18 +38,38 @@ const humanMineQuery = geneId => ({
 		{
 			path: 'id',
 			op: 'ONE OF',
-			values: geneId
+			values: gwasIds
 		}
 	]
 });
 
-const queryData = ({ geneId, serviceUrl, imjsClient = imjs }) => {
+const GWASResultQuery = gwasResultIds => ({
+	from: 'GWASResult',
+	select: [
+		'pValue',
+		'phenotype',
+		'associatedGenes.chromosomeLocation.start',
+		'associatedGenes.chromosome.length',
+		'associatedGenes.chromosome.primaryIdentifier',
+		'associatedGenes.primaryIdentifier'
+	],
+	where: [
+		{
+			path: 'id',
+			op: 'ONE OF',
+			values: gwasResultIds
+		}
+	]
+});
+
+const queryData = ({ ids, isResult, serviceUrl, imjsClient = imjs }) => {
 	const service = new imjsClient.Service({
 		root: serviceUrl
 	});
+	const query = isResult ? GWASResultQuery : GWASQuery;
 	return new Promise((resolve, reject) => {
 		service
-			.records(humanMineQuery(geneId))
+			.records(query(ids))
 			.then(res => {
 				// if (res.length === 0) reject('No data found!');
 				resolve(res);

@@ -49,15 +49,16 @@
     		//in reality (outside the demo) this would be dynamic and not hard-coded
     		// to an ID.
     		dataToInitialiseToolWith = {
+          'GWASResult': {
+            class: 'GWASResult',
+            format: 'ids',
+            value: [42051222, 42051224, 42051226, 42051228, 42051230] // humanmine
+          },
           'GWAS': {
             class: 'GWAS',
             format: 'ids',
-            // right now this id corresponds to Human GATA1
-            // this is a bit fragile since IDs change with every build
-            // but we don't want to make the code more complicated than
-            // needed for the demo.
             value: [42091245] // humanmine
-            // value: [875000005, 875004161, 875006189] // Soyamine
+            // value: [875000005, 875004161, 875006189] // Soymine
           }
     		},
     		toolState = {}, //to be confirmed how we use this.
