@@ -28,8 +28,12 @@ const Scatterplot = ({ graphData, minAxis, totalChromosomes }) => (
 			}}
 			yScale={{
 				type: 'linear',
-				min: Math.floor(minAxis.minY) - 1,
-				max: Math.ceil(minAxis.maxY) + 1
+				min:
+					Math.floor(minAxis.minY) -
+					Math.round((minAxis.maxY - minAxis.minY) * 0.1),
+				max:
+					Math.ceil(minAxis.maxY) +
+					Math.round((minAxis.maxY - minAxis.minY) * 0.1)
 			}}
 			useMesh={false}
 			axisTop={null}
@@ -38,7 +42,13 @@ const Scatterplot = ({ graphData, minAxis, totalChromosomes }) => (
 			colors={graphData.map(c => c.color)}
 			blendMode="multiply"
 			tooltip={({ node }) => (
-				<div className="tooltip-container">
+				<div
+					className={'tooltip-container'.concat(
+						node.data.x > (totalChromosomes + 2) / 2
+							? ' tooltip-container-right'
+							: ''
+					)}
+				>
 					<div className="tooltip-data">
 						<span
 							className="node-color"
@@ -49,15 +59,15 @@ const Scatterplot = ({ graphData, minAxis, totalChromosomes }) => (
 							{node.data.tooltip}
 						</span>
 					</div>
-					<div>
+					<div className="tooltip-data">
 						<strong>Marker Position: </strong>
 						{node.data.x}
 					</div>
-					<div>
+					<div className="tooltip-data">
 						<strong>log10(p-value): </strong>
 						{node.data.y}
 					</div>
-					<div>
+					<div className="tooltip-data">
 						<strong>Chromosome: </strong>
 						{node.data.chromosome}
 					</div>
