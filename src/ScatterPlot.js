@@ -1,7 +1,13 @@
 import React from 'react';
-import { ScatterPlot } from '@nivo/scatterplot';
+import { ResponsiveScatterPlot } from '@nivo/scatterplot';
 
-const Scatterplot = ({ graphData, minAxis }) => (
+function arrayFromOne(count) {
+	return Array(count)
+		.fill(0)
+		.map((_, i) => i + 1);
+}
+
+const Scatterplot = ({ graphData, minAxis, totalChromosomes }) => (
 	<>
 		<div className="graph-container">
 			{graphData.map(data => (
@@ -11,20 +17,19 @@ const Scatterplot = ({ graphData, minAxis }) => (
 				</div>
 			))}
 		</div>
-		<ScatterPlot
+		<ResponsiveScatterPlot
+			animate={false}
 			data={graphData}
-			height={window.innerHeight - 150}
-			width={window.innerWidth - 50}
 			margin={{ top: 30, right: 90, bottom: 60, left: 90 }}
 			xScale={{
 				type: 'linear',
-				min: Math.round(minAxis.minX) - 5,
-				max: Math.round(minAxis.maxX) + 5
+				min: 1,
+				max: totalChromosomes + 1
 			}}
 			yScale={{
 				type: 'linear',
-				min: Math.round(minAxis.minY) - 5,
-				max: Math.round(minAxis.maxY) + 5
+				min: Math.floor(minAxis.minY) - 1,
+				max: Math.ceil(minAxis.maxY) + 1
 			}}
 			useMesh={false}
 			axisTop={null}
@@ -52,9 +57,16 @@ const Scatterplot = ({ graphData, minAxis }) => (
 						<strong>log10(p-value): </strong>
 						{node.data.y}
 					</div>
+					<div>
+						<strong>Chromosome: </strong>
+						{node.data.chromosome}
+					</div>
 				</div>
 			)}
+			gridXValues={arrayFromOne(totalChromosomes)}
 			axisBottom={{
+				format: tick => (tick == 24 ? '' : tick),
+				tickValues: totalChromosomes,
 				orient: 'bottom',
 				tickSize: 5,
 				tickPadding: 5,

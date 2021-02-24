@@ -33,34 +33,34 @@ const RootContainer = ({ serviceUrl, entity }) => {
 			index = 0;
 		data.forEach(d => {
 			d.results.forEach(r => {
-				if (serviceUrl == 'https://www.humanmine.org/humanmine') {
-					if (!r.associatedGenes || !r.pValue) return;
-					r.associatedGenes.forEach(c => {
-						if (!c.chromosome || !c.chromosomeLocation) return;
-						const { primaryIdentifier, length } = c.chromosome;
-						const { start } = c.chromosomeLocation;
-						if (!obj[r.phenotype])
-							obj[r.phenotype] = {
-								id: r.phenotype,
-								data: [],
-								color: colors[index++ % colors.length]
-							};
-						const allDigits = primaryIdentifier.match(/\d+/g) || [];
-						const xAxisVal = allDigits.length
-							? allDigits[allDigits.length - 1] * 1 - 1
-							: 0;
-						const x = xAxisVal + start / length;
-						const y = -1 * Math.log10(r.pValue);
-						minX = Math.min(x, minX);
-						minY = Math.min(y, minY);
-						maxX = Math.max(x, maxX);
-						maxY = Math.max(y, maxY);
-						obj[r.phenotype].data.push({
-							x,
-							y
-						});
+				if (!r.associatedGenes || !r.pValue) return;
+				r.associatedGenes.forEach(c => {
+					if (!c.chromosome || !c.chromosomeLocation) return;
+					const { primaryIdentifier, length } = c.chromosome;
+					const { start } = c.chromosomeLocation;
+					if (!obj[r.phenotype])
+						obj[r.phenotype] = {
+							id: r.phenotype,
+							data: [],
+							color: colors[index++ % colors.length]
+						};
+					const allDigits = primaryIdentifier.match(/\d+/g) || [];
+					const xAxisVal = allDigits.length
+						? Number(allDigits[allDigits.length - 1])
+						: 23; // If it's not a number, it's X or Y.
+					const x = xAxisVal + start / length;
+					const y = -1 * Math.log10(r.pValue);
+					minX = Math.min(x, minX);
+					minY = Math.min(y, minY);
+					maxX = Math.max(x, maxX);
+					maxY = Math.max(y, maxY);
+					obj[r.phenotype].data.push({
+						x,
+						y,
+						chromosome: primaryIdentifier
 					});
-				} else {
+				});
+				/* See query.js for why the soymineQuery has been omitted.
 					if (
 						!r.marker ||
 						!r.pValue ||
@@ -78,7 +78,7 @@ const RootContainer = ({ serviceUrl, entity }) => {
 						};
 					const allDigits = chromosome.secondaryIdentifier.match(/\d+/g) || [];
 					const xAxisVal = allDigits.length
-						? allDigits[allDigits.length - 1] * 1 - 1
+						? Number(allDigits[allDigits.length - 1])
 						: 0;
 					const x = xAxisVal + chromosomeLocation.start / chromosome.length;
 					const y = -1 * Math.log10(r.pValue);
@@ -91,7 +91,7 @@ const RootContainer = ({ serviceUrl, entity }) => {
 						y,
 						tooltip: r.marker && r.marker.primaryIdentifier
 					});
-				}
+          */
 			});
 		});
 		setGraphData([...Object.values(obj)]);
@@ -100,17 +100,20 @@ const RootContainer = ({ serviceUrl, entity }) => {
 
 	return (
 		<div className="rootContainer">
-			<span className="chart-title">GWAS Visualizer</span>
-			{!loading ? (
+			{graphData.length ? (
 				<div className="graph">
-					{graphData.length ? (
-						<Scatterplot graphData={graphData} minAxis={minAxis} />
-					) : (
-						<h1>No data found to visualize</h1>
-					)}
+					<Scatterplot
+						graphData={graphData}
+						minAxis={minAxis}
+						// If you're going to use this visualization for organisms other
+						// than humans, you'll want to set totalChromosomes dynamically.
+						totalChromosomes={23}
+					/>
 				</div>
-			) : (
+			) : loading ? (
 				<Loading />
+			) : (
+				<h4>No data found</h4>
 			)}
 		</div>
 	);

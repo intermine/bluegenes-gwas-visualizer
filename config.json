@@ -9,12 +9,13 @@
       "id": "primaryAccession"
     }
   },
+  "depends": ["GWASResult"],
   "files" : {
     "css" : "dist/style.css",
     "js" : "dist/bundle.js"
   },
   "toolName" : {
-    "human" :"Bluegenes GWAS Visualizer",
+    "human" :"GWAS Plot",
     "cljs" :"bluegenesGWASVisualizer"    
   },
   "version": 2

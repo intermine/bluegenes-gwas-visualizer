@@ -1,3 +1,5 @@
+/* We disabled this soymineQuery as to get the chromosome axis domain right,
+ * we'd have to query for the organism and its count of chromosomes.
 const soymineQuery = geneId => ({
 	from: 'GWAS',
 	select: [
@@ -18,6 +20,7 @@ const soymineQuery = geneId => ({
 		}
 	]
 });
+*/
 
 const humanMineQuery = geneId => ({
 	from: 'GWAS',
@@ -39,16 +42,12 @@ const humanMineQuery = geneId => ({
 });
 
 const queryData = ({ geneId, serviceUrl, imjsClient = imjs }) => {
-	const query =
-		serviceUrl == 'https://www.humanmine.org/humanmine'
-			? humanMineQuery
-			: soymineQuery;
 	const service = new imjsClient.Service({
 		root: serviceUrl
 	});
 	return new Promise((resolve, reject) => {
 		service
-			.records(query(geneId))
+			.records(humanMineQuery(geneId))
 			.then(res => {
 				// if (res.length === 0) reject('No data found!');
 				resolve(res);
