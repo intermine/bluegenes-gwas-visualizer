@@ -9,7 +9,7 @@ function arrayFromOne(count) {
 
 const Scatterplot = ({ graphData, minAxis, totalChromosomes }) => (
 	<>
-		<div className="graph-container">
+		<div className="graph-legends">
 			{graphData.map(data => (
 				<div key={data.id} className="legend-container">
 					<span style={{ background: data.color }} className="legend"></span>
@@ -20,7 +20,7 @@ const Scatterplot = ({ graphData, minAxis, totalChromosomes }) => (
 		<ResponsiveScatterPlot
 			animate={false}
 			data={graphData}
-			margin={{ top: 30, right: 90, bottom: 60, left: 90 }}
+			margin={{ top: 15, right: 90, bottom: 60, left: 90 }}
 			xScale={{
 				type: 'linear',
 				min: 1,
